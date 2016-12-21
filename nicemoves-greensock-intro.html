@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>
+      NiceMov.es GreenSock Intro Tutorial
+    </title>
+    <meta name="author" content="adstyl.es">
+    <meta name="description" content="An intro to Greensock">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- import jQuery & GSAP -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TimelineMax.min.js"></script>
+
+    <style>
+    	/*added some optional basic styles (e,g, centering the SVG)*/
+    	body {
+    		background-color: #195700;
+    	}
+    	svg {
+    		position: absolute;
+    		top:50%;
+    		left:50%;
+    		-webkit-transform: translate(-50%, -50%);
+    		-moz-transform: translate(-50%, -50%);
+    		transform: translate(-50%, -50%);
+    		max-width: 1400px;
+    	}
+    </style>
+
+	<script>
+
+		// when the docuemnt is ready, run this script
+		$(document).ready(function(){
+
+			// nice little tip - set the default ease to Expo.easeOut
+			// this way, if you don't specify an ease, it will use this one by default. 
+			TweenLite.defaultEase = Expo.easeOut;
+
+			// vars
+			// use jQuery to target the various bits of the SVG.
+			$bg 			= $('svg #bg');
+			$sock 			= $('svg #sock');
+			$all_zaps 		= $('svg #dark-zaps, svg #light-zaps');
+			$dark_zaps 		= $('svg #dark-zaps polygon');
+			$light_zaps 	= $('svg #light-zaps polygon');
+			$shadow 		= $('svg #shadow');
+			$allElements	= $('svg #sock, svg #dark-zaps polygon, svg #light-zaps polygon, svg #shadow')
+
+			// TweenMax.set allows you to set how the elements are arranged / setup when the JS loads.
+			TweenMax.set($allElements, 		{opacity:0});
+			TweenMax.set($sock, 			{scale:0.5, y:'+=100px', transformOrigin:"50% 50%"});
+			TweenMax.set($shadow, 			{scale:0.5, transformOrigin:"50% 50%"});
+			TweenMax.set($dark_zaps, 		{scale:0, transformOrigin:"50% 50%"});
+			TweenMax.set($light_zaps, 		{scale:0, transformOrigin:"50% 50%"});
+
+			// create a new timeline, and give it some (optional) attributes.
+			var tl_scene = new TimelineMax({
+				// add in an onComplete option. This fires a function when the timeline reaches it's end.
+			  	onComplete:function() {
+			  		// play the timeline again from the label 'hover-up'.
+			  		// so in effect this oncomplete function creates a loop!
+    				tl_scene.play('hover-up');
+				}
+			});
+			
+
+			tl_scene
+			  	// show sock
+			  	.to($sock,  					1,   		{ opacity:1, scale:1, y:'-=100px', transformOrigin:"50% 50%" }, 		'showSock')
+			  	.to($shadow,  					1,     		{ opacity:1, scale:1, transformOrigin:"50% 50%" }, 					'showSock')
+			  	
+			  	// hovering
+			 	.to($sock, 						2,     		{ y:'-=40px', ease: Power2.easeInOut },								'hover-up')
+			 	.to($all_zaps, 					2,     		{ y:'-=40px', ease: Power2.easeInOut },								'hover-up')
+			 	.to($sock, 						2,     		{ y:'+=40px', ease: Power2.easeInOut },								'hover-down')
+			 	.to($all_zaps, 					2,     		{ y:'+=40px', ease: Power2.easeInOut },								'hover-down')
+
+			  	// show the zaps!
+			  	.staggerTo($dark_zaps, 			0.4,     	{ opacity:1, scale:1, transformOrigin:"50% 50%" }, 	0.1,			'hover-up')
+			  	.staggerTo($light_zaps,  		0.4,     	{ opacity:1, scale:1, transformOrigin:"50% 50%" }, 	0.1,			'hover-up+=0.5')
+
+			  	// hide the zaps!
+			  	.staggerTo($dark_zaps, 			0.6,     	{ opacity:0, scale:0, transformOrigin:"50% 50%" }, 	0.1,			'hover-down')
+			  	.staggerTo($light_zaps,  		0.6,     	{ opacity:0, scale:0, transformOrigin:"50% 50%" }, 	0.1,			'hover-down+=0.5')
+
+			  	// resize the shadow
+			  	.to($shadow,  					2,     		{ scale:0.8, transformOrigin:"50% 50%", ease: 'linear' }, 			'hover-up')
+			  	.to($shadow,  					2,     		{ scale:1, transformOrigin:"50% 50%", ease: 'linear' }, 			'hover-down')
+			
+			;
+
+			// clicking the SVG will fire a function to play the timeline from the start
+			$('svg').click(function(){
+				tl_scene.play(0);
+			});
+
+		});
+		
+
+	</script>
+
+  </head>
+
+  <body>
+
+    <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900"><title>scene</title><rect id="bg" width="1440" height="900" fill="#195700"/><g id="sock"><path d="M777,463.95c28.14-11.3,49.85,38.31,23.22,52.73s-58.41,30.26-79.39,39q-3.08,1.28-6.1,2.5l-.07-.18s-4.81-57.67-71.38-33.81q-1.31-4.22-2.54-9C635,492.85,625.13,454.82,616.08,420c15.34,0,46.47-7,59.1-11.9,7.77,38.54,18.21,77.67,29.21,82.5C718.76,496.87,752.62,473.74,777,463.95Z" fill="#2a6b0b"/><path d="M714.68,558s-4.81-57.67-71.38-33.81c15.79,50.84,41.07,46.13,71.45,34Z" fill="#3cb700"/><path d="M664.29,325.88c-2.94-5.58-69.51,10.14-73,12.59s11.08,71.93,16.32,79.46c1,1.42,4.09,2,8.51,2,15.34,0,46.47-7,59.1-11.9,3.13-1.2,5.13-2.27,5.47-3.06C682.75,400.1,667.79,332.53,664.29,325.88Z" fill="#3cb700"/><path d="M683.28,569.3a34.85,34.85,0,0,1-15.2-3.24c-11.91-5.68-21-19.07-27.8-40.94-.89-2.88-1.76-5.94-2.58-9.12C632,493.94,622.48,457.18,613,420.75l6.13-1.59c9.46,36.43,19,73.19,24.69,95.26.79,3.07,1.63,6,2.49,8.82,6.24,20.09,14.25,32.23,24.48,37.11,11.34,5.41,25.3,1.87,42.77-5.11,2-.8,4-1.63,6.06-2.48,19.32-8,50.36-23.29,79.09-38.85,8.66-4.69,14.6-16.95,7.16-32.78-5-10.62-15.48-19.14-27.7-14.23-7.29,2.92-15.68,7.19-23.8,11.31-20.52,10.42-39.9,20.25-51.27,15.26-6.05-2.66-11.63-12.36-17.56-30.53-4.44-13.6-9-31.86-13.49-54.25l6.21-1.25C691.9,475,702,486,705.66,487.65c8.63,3.79,28.41-6.25,45.86-15.11,8.24-4.18,16.76-8.51,24.31-11.54a24.21,24.21,0,0,1,21.59,1.4,35.66,35.66,0,0,1,14.2,16c6.64,14.14,5.38,32.77-9.88,41-28.9,15.65-60.18,31-79.68,39.13q-3.1,1.29-6.13,2.51C705.58,565.25,694.18,569.3,683.28,569.3Z" fill="#053b00"/><path d="M711.53,558.26c0-.21-2-20.87-17.79-31-11.81-7.57-28.42-7.61-49.37-.1l-2.14-6c22.93-8.21,41.42-8,55,.76,18.43,11.86,20.54,34.8,20.62,35.77l-6.31.53,3.15-.26Z" fill="#053b00"/><path d="M616.19,423.12h-.12c-6.07,0-9.5-1.06-11.11-3.39-5.43-7.8-19-71.29-17.25-80.87a4.48,4.48,0,0,1,1.73-3c2.88-2,24.3-7,34.22-9,14.68-3.09,33.52-6.44,39.86-4.89a5.15,5.15,0,0,1,3.56,2.47c2.41,4.58,8,28.84,10.57,41,7.78,36.42,6.36,39.72,5.89,40.81-.63,1.47-2.06,2.78-7.24,4.77C663.89,415.79,632.53,423.12,616.19,423.12Zm-6.1-7.12c.29.16,1.64.78,6,.79h.11c15.16,0,45.81-7.06,57.85-11.69h0a24.49,24.49,0,0,0,3.65-1.65c.1-3.5-2-17-6.47-37.83-4.19-19.48-7.94-33.8-9.45-37.59-2.54-.53-12.14-.08-34.8,4.59-15.37,3.17-29.2,6.76-33.14,8.17C593.2,350.6,605.76,409.29,610.09,416Zm.08.12h0ZM677.64,404h0Z" fill="#053b00"/><path d="M683.28,569.3a34.85,34.85,0,0,1-15.2-3.24c-11.91-5.68-21-19.07-27.8-40.94-.89-2.88-1.76-5.94-2.58-9.12C632,493.94,622.48,457.18,613,420.75l6.13-1.59c9.46,36.43,19,73.19,24.69,95.26.79,3.07,1.63,6,2.49,8.82,6.24,20.09,14.25,32.23,24.48,37.11,11.34,5.41,25.3,1.87,42.77-5.11,2-.8,4-1.63,6.06-2.48,19.32-8,50.36-23.29,79.09-38.85,8.66-4.69,14.6-16.95,7.16-32.78-5-10.62-15.48-19.14-27.7-14.23-7.29,2.92-15.68,7.19-23.8,11.31-20.52,10.42-39.9,20.25-51.27,15.26-6.05-2.66-11.63-12.36-17.56-30.53-4.44-13.6-9-31.86-13.49-54.25l6.21-1.25C691.9,475,702,486,705.66,487.65c8.63,3.79,28.41-6.25,45.86-15.11,8.24-4.18,16.76-8.51,24.31-11.54a24.21,24.21,0,0,1,21.59,1.4,35.66,35.66,0,0,1,14.2,16c6.64,14.14,5.38,32.77-9.88,41-28.9,15.65-60.18,31-79.68,39.13q-3.1,1.29-6.13,2.51C705.58,565.25,694.18,569.3,683.28,569.3Z" fill="#053b00"/><path d="M711.53,558.26c0-.21-2-20.87-17.79-31-11.81-7.57-28.42-7.61-49.37-.1l-2.14-6c22.93-8.21,41.42-8,55,.76,18.43,11.86,20.54,34.8,20.62,35.77l-6.31.53,3.15-.26Z" fill="#053b00"/><path d="M616.19,423.12h-.12c-6.07,0-9.5-1.06-11.11-3.39-5.43-7.8-19-71.29-17.25-80.87a4.48,4.48,0,0,1,1.73-3c2.88-2,24.3-7,34.22-9,14.68-3.09,33.52-6.44,39.86-4.89a5.15,5.15,0,0,1,3.56,2.47c2.41,4.58,8,28.84,10.57,41,7.78,36.42,6.36,39.72,5.89,40.81-.63,1.47-2.06,2.78-7.24,4.77C663.89,415.79,632.53,423.12,616.19,423.12Zm-6.1-7.12c.29.16,1.64.78,6,.79h.11c15.16,0,45.81-7.06,57.85-11.69h0a24.49,24.49,0,0,0,3.65-1.65c.1-3.5-2-17-6.47-37.83-4.19-19.48-7.94-33.8-9.45-37.59-2.54-.53-12.14-.08-34.8,4.59-15.37,3.17-29.2,6.76-33.14,8.17C593.2,350.6,605.76,409.29,610.09,416Zm.08.12h0ZM677.64,404h0Z" fill="#053b00"/></g><g id="dark-zaps"><polygon points="853.57 426.56 981.46 378.3 976.8 420.32 1098.91 379.64 960.42 469.75 957.08 428.26 853.57 426.56" fill="#053b00"/><polygon points="293.67 384.29 430.3 380.11 412.26 418.35 540.96 419.48 380.73 459.8 391.03 419.47 293.67 384.29" fill="#053b00"/><polygon points="604.72 122.4 639.98 200.16 613.6 198.96 643.9 273.42 582.13 190.75 607.85 186.99 604.72 122.4" fill="#053b00"/><polygon points="1032.95 278.29 959.84 322.38 957.96 296.04 887.54 334.81 962.44 263.82 969.17 288.93 1032.95 278.29" fill="#053b00"/><polygon points="815.66 726.81 765.25 657.91 791.31 653.69 746.43 587 823.8 655.29 799.39 664.24 815.66 726.81" fill="#053b00"/><polygon id="zap" points="545.67 497.37 472.56 541.46 470.68 515.12 400.26 553.89 475.16 482.9 481.89 508.01 545.67 497.37" fill="#053b00"/><polygon id="zap-2" data-name="zap" points="887.54 111.17 854.65 189.96 837.55 169.83 803.7 242.74 822.12 141.2 842.4 157.46 887.54 111.17" fill="#053b00"/><polygon id="zap-3" data-name="zap" points="447.89 131.76 533.81 213.12 499.32 225.37 577.15 305.09 454.63 231.3 485.68 213.01 447.89 131.76" fill="#053b00"/></g><g id="light-zaps"><polygon id="zap-4" data-name="zap" points="746.52 372.32 806.52 276.43 824.52 306.43 884.52 218.43 838.52 347.18 815.52 321.55 746.52 372.32" fill="#3cb700"/><polygon id="zap-5" data-name="zap" points="429.87 639.43 507.38 557.04 519.2 589.97 595.17 515.32 525 632.67 507.43 603.05 429.87 639.43" fill="#3cb700"/><polygon id="zap-6" data-name="zap" points="417.32 299.32 483.45 324.18 467.31 338.92 528.61 364.75 444.09 352.53 456.94 335.28 417.32 299.32" fill="#3cb700"/><polygon id="zap-7" data-name="zap" points="765.97 176.95 748.99 245.53 732.47 231.22 713.96 295.12 716.24 209.75 734.88 220.5 765.97 176.95" fill="#3cb700"/><polygon id="zap-8" data-name="zap" points="647.17 604.88 630.19 673.46 613.67 659.15 595.16 723.05 597.45 637.68 616.08 648.43 647.17 604.88" fill="#3cb700"/><polygon id="zap-9" data-name="zap" points="912.32 645.71 850.76 611.04 868.96 598.95 812.32 564.05 893.99 589.04 878.65 604.13 912.32 645.71" fill="#3cb700"/><polygon id="zap-10" data-name="zap" points="845.62 508.52 943.5 505.85 930.49 533.19 1022.68 534.3 907.81 562.81 915.28 533.95 845.62 508.52" fill="#3cb700"/></g><ellipse id="shadow" cx="717.95" cy="799.06" rx="67.16" ry="9.01" fill="#134100"/></svg>
+  
+  </body>
+</html>
+
+
